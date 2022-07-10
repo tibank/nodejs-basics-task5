@@ -1,0 +1,251 @@
+{
+	"info": {
+		"_postman_id": "e6beacc5-e546-4f6e-a0fc-b1113baa7ea7",
+		"name": "GraphQL",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3604451"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "UserRegister",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation Register($userRegister: UserRegister) {\r\n  register(userRegister: $userRegister) {\r\n    id\r\n    firstName\r\n    lastName\r\n    password\r\n    email\r\n  }\r\n}",
+								"variables": "{\r\n  \"userRegister\": {\r\n    \"firstName\": \"name 3\",\r\n    \"lastName\": \"last 3\",\r\n    \"password\": \"123456789\",\r\n    \"email\": \"user3@gmail.com\"\r\n  }\r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{apollo_url}}",
+							"host": [
+								"{{apollo_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "jwt",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = JSON.parse(responseBody);\r",
+									"\r",
+									"if(resp && resp.data.jwt.jwt){\r",
+									"    postman.setEnvironmentVariable(\"auth_token\", resp.data.jwt.jwt);\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query Jwt($login: UserLogin) {\r\n  jwt(login: $login) {\r\n    jwt\r\n  }\r\n}",
+								"variables": "{\r\n  \"login\": {\r\n    \"password\": \"123456789\",\r\n    \"email\": \"user1@gmail.com\"\r\n  }\r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{apollo_url}}",
+							"host": [
+								"{{apollo_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetUserById",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query Query($userId: ID!) {\r\n  user(id: $userId) {\r\n    firstName\r\n    lastName\r\n    password\r\n    email\r\n    id\r\n  }\r\n}",
+								"variables": "{\r\n  \"userId\": \"62c2d89c4a9453e9428210e9\"\r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{apollo_url}}",
+							"host": [
+								"{{apollo_url}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Genre",
+			"item": [
+				{
+					"name": "GetGenres",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query Query {\r\n  genres {\r\n    id\r\n    name\r\n    description\r\n    country\r\n    year\r\n  }\r\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{apollo_url}}",
+							"host": [
+								"{{apollo_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetGenreByID",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query Genre($genreId: ID!) {\r\n  genre(id: $genreId) {\r\n    id\r\n    name\r\n    description\r\n    country\r\n    year\r\n  }\r\n}",
+								"variables": "{\r\n  \"genreId\": \"62cadc9bdccea6707d457f2f\"\r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{apollo_url}}",
+							"host": [
+								"{{apollo_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateGenre",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = JSON.parse(responseBody);\r",
+									"\r",
+									"if(resp && resp.data.createGenre.id){\r",
+									"    postman.setEnvironmentVariable(\"last_genre_id\", resp.data.createGenre.id);\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation Mutation($genre: InputGenre) {\r\n  createGenre(genre: $genre) {\r\n    id\r\n    name\r\n    description\r\n    country\r\n    year\r\n  }\r\n}",
+								"variables": "{\r\n  \"genre\": {\r\n    \"name\": \"Genre 5\",\r\n    \"description\": \"description 5\",\r\n    \"country\": \"USA\",\r\n    \"year\": 2011   \r\n  }\r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{apollo_url}}",
+							"host": [
+								"{{apollo_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateGenre",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation UpdateGenre($genre: UpdateGenre) {\r\n  updateGenre(genre: $genre) {\r\n    id\r\n    name\r\n    description\r\n    country\r\n    year\r\n  }\r\n}",
+								"variables": "{\r\n  \"genre\": {\r\n    \"id\": \"{{last_genre_id}}\",\r\n    \"name\": \"Genre 222\",\r\n    \"description\": \"description 2222\",\r\n    \"country\": \"Poland\",\r\n    \"year\": 2009   \r\n  }\r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{apollo_url}}",
+							"host": [
+								"{{apollo_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteGenre",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation DeleteGenre($deleteGenreId: ID!) {\r\n  deleteGenre(id: $deleteGenreId) {\r\n    acknowledged\r\n    deletedCount\r\n  }\r\n}",
+								"variables": "{\r\n  \"deleteGenreId\": \"{{last_genre_id}}\"\r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{apollo_url}}",
+							"host": [
+								"{{apollo_url}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
